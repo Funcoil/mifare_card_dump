@@ -2,7 +2,7 @@ extern crate pn532;
 extern crate mifare;
 
 use pn532::tags::{ISO14443AListOptions};
-use mifare::MifareTag;
+use mifare::{MifareTag, KeyOption};
 
 fn main() {
     let i2c = pn532::bus::i2c::open("/dev/i2c-0").unwrap();
@@ -20,7 +20,7 @@ fn main() {
     let mut rbuf = [0u8; 16];
     for sector_number in 0..16 {
 		println!("-------------------Sector {:02}-------------------", sector_number);
-        let mut sector = tag.authenticate_sector(sector_number, &[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]).unwrap();
+        let mut sector = tag.authenticate_sector(sector_number, KeyOption::KeyA, &[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]).unwrap();
         for block in 0..4 {
             sector.read_block(block, &mut rbuf).unwrap();
             for b in &rbuf {
